@@ -1,4 +1,4 @@
-call(){
+def call(){
     stages{
         stage('Code Quality'){
             steps{
