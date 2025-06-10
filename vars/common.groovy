@@ -1,6 +1,7 @@
 def codeQuality(){
     stage('Code Quality'){
-            echo 'code quality'
+    echo 'code quality'
+        sh 'env'
         }
     }
 def codeChecks(){
