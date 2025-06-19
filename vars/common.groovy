@@ -46,11 +46,11 @@ def artifacts() {
                    '''
             }
             if (env.APPTYPE == "nginx") {
-                sh '''
+                sh """
                       echo "Zipping static files for nginx"
                       cd static
                       zip -r ../${COMPONENT}-${TAG_NAME}.zip *
-                   '''
+                   """
             }
         }
         stage('Publish Artifacts') {
