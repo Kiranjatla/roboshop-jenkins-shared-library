@@ -57,7 +57,12 @@ def artifacts() {
             withCredentials([usernamePassword(credentialsId: 'NEXUS', passwordVariable: 'nexusPass', usernameVariable: 'nexusUser')]) {
                 sh '''
                  echo "Uploading ${COMPONENT}-${TAG_NAME}.zip to Nexus"
-                ls -l ${COMPONENT}-${TAG_NAME}.zip || { echo "ZIP file not found!"; exit 1; }
+
+                # Ensure ZIP exists
+                if [ ! -f ${COMPONENT}-${TAG_NAME}.zip ]; then
+                    echo "ZIP file not found: ${COMPONENT}-${TAG_NAME}.zip"
+                    exit 1
+                fi
 
                 curl -v -u ${nexusUser}:${nexusPass} \\
                   --upload-file ${COMPONENT}-${TAG_NAME}.zip \\
