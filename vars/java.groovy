@@ -4,6 +4,10 @@ def call() {
     node {
         try {
             common.codeCheckout()
+            stage('compile code')
+                    {
+                      sh 'mvn compile'
+                    }
             common.codeQuality()
             common.codeChecks()
             common.artifacts()
