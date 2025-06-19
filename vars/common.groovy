@@ -47,6 +47,7 @@ def artifacts() {
             }
             if (env.APPTYPE == "nginx") {
                 sh '''
+                      echo "Zipping static files for nginx"
                       cd static
                       zip -r ../${COMPONENT}-${TAG_NAME}.zip *
                    '''
@@ -55,7 +56,12 @@ def artifacts() {
         stage('Publish Artifacts') {
             withCredentials([usernamePassword(credentialsId: 'NEXUS', passwordVariable: 'nexusPass', usernameVariable: 'nexusUser')]) {
                 sh '''
-                 curl -v -u ${nexusUser}:${nexusPass} --upload-file ${COMPONENT}-${TAG_NAME}.zip http://nexus.roboshop.internal:8081/repository/${COMPONENT}/${COMPONENT}-${TAG_NAME}.zip
+                 echo "Uploading ${COMPONENT}-${TAG_NAME}.zip to Nexus"
+                ls -l ${COMPONENT}-${TAG_NAME}.zip || { echo "ZIP file not found!"; exit 1; }
+
+                curl -v -u ${nexusUser}:${nexusPass} \\
+                  --upload-file ${COMPONENT}-${TAG_NAME}.zip \\
+                  http://nexus.roboshop.internal:8081/repository/${COMPONENT}/${COMPONENT}-${TAG_NAME}.zip
                 '''
             }
         }
