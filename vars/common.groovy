@@ -28,34 +28,23 @@ def artifacts() {
     if (env.TAG_NAME ==~ ".*") {
         stage('Prepare Artifacts') {
             if (env.APPTYPE == "nodejs") {
-                sh """
-                      echo "Installing node dependencies"
-                      npm install
-                       echo "Zipping node_modules and server.js to ${COMPONENT}-${TAG_NAME}.zip"
-                       zip -r ${COMPONENT}-${TAG_NAME}.zip node_modules server.js
-                    """
+                sh '''
+                     npm install 
+                     zip -r ${COMPONENT}-${TAG_NAME}.zip node_modules server.js 
+                    '''
             }
-
             if (env.APPTYPE == "java") {
-                sh """
-                      echo "Building Java application"
-                       mvn clean package
-
-                        echo "Renaming jar to ${COMPONENT}.jar"
-                        mv target/${COMPONENT}-1.0.jar ${COMPONENT}.jar
-
-                         echo "Zipping ${COMPONENT}.jar into ${COMPONENT}-${TAG_NAME}.zip"
-                         zip -r ${COMPONENT}-${TAG_NAME}.zip ${COMPONENT}.jar
-                    """
+                sh '''
+                     mvn clean package 
+                     mv target/${COMPONENT}-1.0.jar ${COMPONENT}.jar 
+                     zip -r ${COMPONENT}-${TAG_NAME}.zip ${COMPONENT}.jar
+                   '''
             }
-
             if (env.APPTYPE == "python") {
-                sh """
-                      echo "Zipping Python files: *.py, ${COMPONENT}.ini, requirements.txt"
-                      zip -r ${COMPONENT}-${TAG_NAME}.zip *.py ${COMPONENT}.ini requirements.txt
-                    """
+                sh '''
+                    zip -r ${COMPONENT}-${TAG_NAME}.zip *.py ${COMPONENT}.ini requirements.txt
+                   '''
             }
-
             if (env.APPTYPE == "nginx") {
                 sh '''
                       echo "Zipping static files for nginx"
