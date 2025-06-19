@@ -29,32 +29,20 @@ def artifacts() {
         stage('Prepare Artifacts') {
             if (env.APPTYPE == "nodejs") {
                 sh '''
-        echo "📦 Installing Node.js dependencies..."
-        npm install || { echo "❌ npm install failed"; exit 1; }
-
-        echo "🧾 Checking required files..."
-        [ -f server.js ] || { echo "❌ server.js not found!"; exit 1; }
-        [ -d node_modules ] || { echo "❌ node_modules directory not found!"; exit 1; }
-
-        echo "🗜️ Creating ZIP file: ${COMPONENT}-${TAG_NAME}.zip"
-        zip -r ${COMPONENT}-${TAG_NAME}.zip node_modules server.js || { echo "❌ ZIP failed"; exit 1; }
-
-        echo "✅ ZIP created:"
-        ls -lh ${COMPONENT}-${TAG_NAME}.zip
-    '''
+          npm install 
+          #zip -r ${COMPONENT}-${TAG_NAME}.zip node_modules server.js 
+        '''
             }
-
-
             if (env.APPTYPE == "java") {
                 sh '''
           mvn clean package 
           mv target/${COMPONENT}-1.0.jar ${COMPONENT}.jar 
-          zip -r ${COMPONENT}-${TAG_NAME}.zip ${COMPONENT}.jar
+          #zip -r ${COMPONENT}-${TAG_NAME}.zip ${COMPONENT}.jar
         '''
             }
             if (env.APPTYPE == "python") {
                 sh '''
-          zip -r ${COMPONENT}-${TAG_NAME}.zip *.py ${COMPONENT}.ini requirements.txt
+          #zip -r ${COMPONENT}-${TAG_NAME}.zip *.py ${COMPONENT}.ini requirements.txt
         '''
             }
             if (env.APPTYPE == "nginx") {
@@ -69,14 +57,8 @@ def artifacts() {
         stage('Publish Artifacts') {
             withCredentials([usernamePassword(credentialsId: 'NEXUS', passwordVariable: 'nexusPass', usernameVariable: 'nexusUser')]) {
                 sh '''
-    echo "📂 Verifying zip file before upload..."
-    ls -l ${COMPONENT}-${TAG_NAME}.zip || { echo "❌ ZIP file not found!"; exit 1; }
-
-    echo "📤 Uploading to Nexus..."
-    curl -v -u ${nexusUser}:${nexusPass} \
-      --upload-file ${COMPONENT}-${TAG_NAME}.zip \
-      http://nexus.roboshop.internal:8081/repository/${COMPONENT}/${COMPONENT}-${TAG_NAME}.zip
-'''
+                      curl -v -u ${nexusUser}:${nexusPass} --upload-file ${COMPONENT}-${TAG_NAME}.zip http://nexus.roboshop.internal:8081/repository/${COMPONENT}/${COMPONENT}-${TAG_NAME}.zip
+                   '''
 
             }
         }
