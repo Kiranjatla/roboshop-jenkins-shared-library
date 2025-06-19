@@ -29,10 +29,21 @@ def artifacts() {
         stage('Prepare Artifacts') {
             if (env.APPTYPE == "nodejs") {
                 sh '''
-          npm install 
-          zip -r ${COMPONENT}-${TAG_NAME}.zip node_modules server.js 
-        '''
+        echo "📦 Node.js: Installing dependencies..."
+        npm install || { echo "❌ npm install failed"; exit 1; }
+
+        echo "🧾 Checking required files..."
+        [ -f server.js ] || { echo "❌ server.js not found!"; exit 1; }
+        [ -d node_modules ] || { echo "❌ node_modules/ directory not found!"; exit 1; }
+
+        echo "🗜️ Creating ZIP file ${COMPONENT}-${TAG_NAME}.zip"
+        zip -r ${COMPONENT}-${TAG_NAME}.zip node_modules server.js || { echo "❌ zip failed"; exit 1; }
+
+        echo "✅ ZIP created successfully:"
+        ls -lh ${COMPONENT}-${TAG_NAME}.zip
+    '''
             }
+
             if (env.APPTYPE == "java") {
                 sh '''
           mvn clean package 
