@@ -29,39 +29,21 @@ def artifacts() {
         stage('Prepare Artifacts') {
             if (env.APPTYPE == "nodejs") {
                 sh '''
-                    echo "Installing node dependencies..."
-                    npm install || { echo "npm install failed"; exit 1; }
-
-                    echo "Zipping nodejs files..."
-                    ls -l
-                    zip -r ${COMPONENT}-${TAG_NAME}.zip node_modules server.js || { echo "zip failed"; exit 1; }
-
-                    ls -l ${COMPONENT}-${TAG_NAME}.zip
-                '''
+          npm install 
+          zip -r ${COMPONENT}-${TAG_NAME}.zip node_modules server.js 
+        '''
             }
             if (env.APPTYPE == "java") {
                 sh '''
-                    echo "Building Java project..."
-                    mvn clean package || { echo "mvn failed"; exit 1; }
-
-                    echo "Renaming jar..."
-                    ls -l target/
-                    mv target/${COMPONENT}-1.0.jar ${COMPONENT}.jar || { echo "Jar not found"; exit 1; }
-
-                    echo "Zipping jar..."
-                    zip -r ${COMPONENT}-${TAG_NAME}.zip ${COMPONENT}.jar || { echo "zip failed"; exit 1; }
-
-                    ls -l ${COMPONENT}-${TAG_NAME}.zip
-                '''
+          mvn clean package 
+          mv target/${COMPONENT}-1.0.jar ${COMPONENT}.jar 
+          zip -r ${COMPONENT}-${TAG_NAME}.zip ${COMPONENT}.jar
+        '''
             }
             if (env.APPTYPE == "python") {
                 sh '''
-                    echo "Zipping Python files..."
-                    ls -l
-                    zip -r ${COMPONENT}-${TAG_NAME}.zip *.py ${COMPONENT}.ini requirements.txt || { echo "zip failed"; exit 1; }
-
-                    ls -l ${COMPONENT}-${TAG_NAME}.zip
-                '''
+          zip -r ${COMPONENT}-${TAG_NAME}.zip *.py ${COMPONENT}.ini requirements.txt
+        '''
             }
             if (env.APPTYPE == "nginx") {
                 sh '''
