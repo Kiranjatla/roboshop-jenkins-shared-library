@@ -1,17 +1,15 @@
 def call() {
     env.SONAR_EXTRA_OPTS = "-Dsonar.java.binaries=./target"
-    env.APPTYPE == "java"
+    env.APPTYPE = "java"
     node {
         try {
             common.codeCheckout()
-            stage('compile code')
-                    {
-                      sh 'mvn compile'
-                    }
+            stage('Compile Code') {
+                sh 'mvn compile'
+            }
             common.codeQuality()
             common.codeChecks()
             common.artifacts()
-
         } catch (Exception e){
             mail bcc: '', body: "Build Failure ${RUN_DISPLAY_URL}", cc: '', from: 'kiranjatla9@gmail.com', replyTo: '', subject: 'Build failed', to: 'kiranjatla9@gmail.com'
         }
