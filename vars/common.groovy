@@ -34,25 +34,25 @@ def artifacts() {
                     zip -r ${COMPONENT}-${TAG_NAME}.zip node_modules server.js 
                     '''
             }
-            if (env.APPTYPE == "java") {
-                sh '''
-                     mvn clean package 
-                     mv target/${COMPONENT}-1.0.jar ${COMPONENT}.jar 
-                     zip -r ${COMPONENT}-${TAG_NAME}.zip ${COMPONENT}.jar
-                   '''
-            }
-            if (env.APPTYPE == "python") {
-                sh '''
-                    zip -r ${COMPONENT}-${TAG_NAME}.zip *.py ${COMPONENT}.ini requirements.txt
-                   '''
-            }
-            if (env.APPTYPE == "nginx") {
-                sh '''
-                      echo "Zipping static files for nginx"
-                      cd static
-                      zip -r ../${COMPONENT}-${TAG_NAME}.zip *
-                   '''
-            }
+//            if (env.APPTYPE == "java") {
+//                sh '''
+//                     mvn clean package
+//                     mv target/${COMPONENT}-1.0.jar ${COMPONENT}.jar
+//                     zip -r ${COMPONENT}-${TAG_NAME}.zip ${COMPONENT}.jar
+//                   '''
+//            }
+//            if (env.APPTYPE == "python") {
+//                sh '''
+//                    zip -r ${COMPONENT}-${TAG_NAME}.zip *.py ${COMPONENT}.ini requirements.txt
+//                   '''
+//            }
+//            if (env.APPTYPE == "nginx") {
+//                sh '''
+//                      echo "Zipping static files for nginx"
+//                      cd static
+//                      zip -r ../${COMPONENT}-${TAG_NAME}.zip *
+//                   '''
+//            }
 
         }
         stage('Publish Artifacts') {
