@@ -1,5 +1,5 @@
 def call() {
-    env.APPTYPE == "nodejs"
+    env.APPTYPE = "nodejs"
     node {
         try {
             common.codeCheckout()
