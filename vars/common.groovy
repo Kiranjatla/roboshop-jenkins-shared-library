@@ -25,7 +25,9 @@ def codeChecks(){
     }
 }}
 
+sh 'echo Outside'
 def artifacts() {
+sh 'echo Inside'
     print TAG_NAME
     if (env.TAG_NAME ==~ ".*") {
         stage('Prepare Artifacts') {
