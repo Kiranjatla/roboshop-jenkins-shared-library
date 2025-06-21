@@ -26,9 +26,10 @@ def codeChecks(){
 }}
 
 def artifacts() {
-    print TAG_NAME
     if (env.TAG_NAME ==~ ".*") {
         stage('Prepare Artifacts') {
+   
+sh 'echo TAG - ${APPTYPE}'
             if (env.APPTYPE == "nodejs") {
                 sh '''
                     npm install 
