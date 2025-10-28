@@ -100,9 +100,17 @@ def artifacts() {
     }
     stage('Build Docker Image') {
             sh '''
-        docker build .
+        docker build -t 037402781494.dkr.ecr.us-east-1.amazonaws.com/cart:${TAG_NAME} .
       '''
         }
+    if (env.TAG_NAME ==~ ".*") {
+
+    stage('Publish Docker Image'){
+        sh '''
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 037402781494.dkr.ecr.us-east-1.amazonaws.com
+            docker push 037402781494.dkr.ecr.us-east-1.amazonaws.com/cart:${TAG_NAME}
+            '''
+    }
         
 //        stage('Publish Artifacts') {
 //            withCredentials([usernamePassword(credentialsId: 'NEXUS', passwordVariable: 'nexusPass', usernameVariable: 'nexusUser')]) {
@@ -112,5 +120,5 @@ def artifacts() {
 //            }
 //        }
 
-       // }
+        }
    }
