@@ -100,7 +100,7 @@ def artifacts() {
     }
     stage('Build Docker Image') {
             sh '''
-        docker build -t 037402781494.dkr.ecr.us-east-1.amazonaws.com/cart:latest .
+        docker build -t 037402781494.dkr.ecr.us-east-1.amazonaws.com/${COMPONENT}:latest .
       '''
         }
     if (env.TAG_NAME ==~ ".*") {
@@ -108,8 +108,8 @@ def artifacts() {
     stage('Publish Docker Image'){
         sh '''
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 037402781494.dkr.ecr.us-east-1.amazonaws.com
-            docker tag 037402781494.dkr.ecr.us-east-1.amazonaws.com/cart:latest 037402781494.dkr.ecr.us-east-1.amazonaws.com/cart:${TAG_NAME}
-            docker push 037402781494.dkr.ecr.us-east-1.amazonaws.com/cart:${TAG_NAME}
+            docker tag 037402781494.dkr.ecr.us-east-1.amazonaws.com/${COMPONENT}:latest 037402781494.dkr.ecr.us-east-1.amazonaws.com/${COMPONENT}:${TAG_NAME}
+            docker push 037402781494.dkr.ecr.us-east-1.amazonaws.com/${COMPONENT}:${TAG_NAME}
             '''
     }
         
