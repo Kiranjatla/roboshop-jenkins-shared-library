@@ -27,36 +27,35 @@ def codeChecks(){
 
 def artifacts() {
     if (env.TAG_NAME ==~ ".*") {
-        stage('Prepare Artifacts') {
-   
-sh 'echo TAG - ${APPTYPE}'
-            if (env.APPTYPE == "nodejs") {
-                sh '''
+    stage('Prepare Artifacts') {
+
+        sh 'echo TAG - ${APPTYPE}'
+        if (env.APPTYPE == "nodejs") {
+            sh '''
                     npm install 
                     zip -r ${COMPONENT}-${TAG_NAME}.zip node_modules server.js 
                     '''
-            }
-            if (env.APPTYPE == "java") {
-                sh '''
+        }
+        if (env.APPTYPE == "java") {
+            sh '''
                      mvn clean package
                      mv target/${COMPONENT}-1.0.jar ${COMPONENT}.jar
                      zip -r ${COMPONENT}-${TAG_NAME}.zip ${COMPONENT}.jar
                    '''
-            }
-            if (env.APPTYPE == "python") {
-                sh '''
+        }
+        if (env.APPTYPE == "python") {
+            sh '''
                     zip -r ${COMPONENT}-${TAG_NAME}.zip *.py ${COMPONENT}.ini requirements.txt
                    '''
-            }
-            if (env.APPTYPE == "nginx") {
-                sh '''
+        }
+        if (env.APPTYPE == "nginx") {
+            sh '''
                       echo "Zipping static files for nginx"
                       cd static
                       zip -r ../${COMPONENT}-${TAG_NAME}.zip *
                    '''
-            }
-
         }
+    }
         stage('Publish Artifacts') {
             withCredentials([usernamePassword(credentialsId: 'NEXUS', passwordVariable: 'nexusPass', usernameVariable: 'nexusUser')]) {
                 sh '''
@@ -66,4 +65,22 @@ sh 'echo TAG - ${APPTYPE}'
             }
         }
     }
+}
+
+def docker() {
+    //if (env.TAG_NAME ==~ ".*" ) {
+        stage('Build Docker Image') {
+            sh '''
+        docker build .
+      '''
+        }
+        stage('Publish Artifacts') {
+            withCredentials([usernamePassword(credentialsId: 'NEXUS', passwordVariable: 'nexusPass', usernameVariable: 'nexusUser')]) {
+                sh '''
+  ls
+                   '''
+
+            }
+        }
+//    }
 }
