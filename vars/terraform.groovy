@@ -19,9 +19,7 @@ def call() {
             rm -rf .terraform*
             terrafile -f env-${ENV}/Terrafile
             terraform init -backend-config=env-${ENV}/backend.tfvars
-            terraform ${ACTION} -auto-approve -var-file=env-${ENV}/main.tfvars || true 
-            terraform ${ACTION} -auto-approve -var-file=env-${ENV}/main.tfvars || true 
-            terraform ${ACTION} -auto-approve -var-file=env-${ENV}/main.tfvars 
+            terraform ${ACTION} -auto-approve -var-file=env-${ENV}/main.tfvars || true
         '''
                 }
             }
